@@ -18,7 +18,7 @@ abstract class Database
         {
             return self::$instance;
         }
-        $config = require ROOT_DIR . "backend/configs/database.php";
+        $config = require CONFIGS_DIR . "database.php";
 
         if (!in_array($config["driver"], self::DRIVERS))
         {

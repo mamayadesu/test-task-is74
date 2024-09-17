@@ -1,6 +1,12 @@
 <?php
 
+if (!defined("TEST_IS74"))
+{
+    exit;
+}
+
 define("ROOT_DIR", dirname(__FILE__) . DIRECTORY_SEPARATOR);
+define("CONFIGS_DIR", ROOT_DIR . "backend/configs/");
 
 spl_autoload_register(function($className)
 {
