@@ -12,9 +12,9 @@ abstract class Database
 
     abstract protected function __construct(array $config);
 
-    final public static function getInstance() : Database
+    final public static function getInstance() : IDatabase
     {
-        if (self::$instance !== null)
+        if (self::isDatabaseInitialized())
         {
             return self::$instance;
         }
@@ -36,5 +36,10 @@ abstract class Database
         }
 
         return self::$instance;
+    }
+
+    public static function isDatabaseInitialized() : bool
+    {
+        return self::$instance !== null;
     }
 }
