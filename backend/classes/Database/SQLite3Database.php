@@ -22,6 +22,7 @@ class SQLite3Database extends Database implements IDatabase
                 $this->execute("CREATE TABLE tariffs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(255) NOT NULL,
+    description TEXT NULL,
     price REAL NOT NULL,
     speed INTEGER NOT NULL,
     created INTEGER NOT NULL,

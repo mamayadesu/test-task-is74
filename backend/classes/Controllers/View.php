@@ -45,6 +45,7 @@ class View implements IController
 
     public function includeStatic() : void
     {
+        Layout::getInstance()->addJsFile("Control.js");
         Layout::getInstance()->addCssFile("style.css");
         Layout::getInstance()->addJsFile("jquery-3.7.1.min.js");
     }
