@@ -1,7 +1,6 @@
 <?php
-use \test_is74\Controllers\View;
 
-/** @var View $this */
+/** @var \test_is74\Controllers\View $this */
 
 $this->title = "Просмотр тарифов";
 

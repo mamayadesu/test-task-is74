@@ -25,6 +25,7 @@ class SQLite3Database extends Database implements IDatabase
     price REAL NOT NULL,
     speed INTEGER NOT NULL,
     created INTEGER NOT NULL,
+    end INTEGER NOT NULL,
     updated INTEGER NULL
 )");
             }

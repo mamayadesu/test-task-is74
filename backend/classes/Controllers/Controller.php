@@ -15,7 +15,8 @@ class Controller
             case "view":
                 $controller = new View();
                 $parameters = [
-                    "view" => $_GET["v"] ?? "index"
+                    "view" => $_GET["v"] ?? "index",
+                    "id" => $_GET["id"] ?? null
                 ];
                 break;
 

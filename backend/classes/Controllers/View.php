@@ -2,10 +2,13 @@
 
 namespace test_is74\Controllers;
 
+use test_is74\Layout;
+
 class View implements IController
 {
     private string $title = "";
     private string $pageContent = "";
+    private ?string $id = null;
 
     public function handleRequest(array $parameters) : void
     {
@@ -16,6 +19,7 @@ class View implements IController
             return;
         }
 
+        $this->id = $parameters["id"];
         if (file_exists(ROOT_DIR . "backend/views/" . $parameters["view"] . ".php"))
         {
             $this->load($parameters["view"]);
@@ -39,8 +43,14 @@ class View implements IController
         return $websiteName;
     }
 
+    public function includeStatic() : void
+    {
+        Layout::getInstance()->addCssFile("style.css");
+    }
+
     public function load(string $viewName) : void
     {
+        $this->includeStatic();
         ob_start();
         require ROOT_DIR . "backend/views/" . $viewName . ".php";
         $this->pageContent = ob_get_clean();

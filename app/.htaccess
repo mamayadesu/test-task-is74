@@ -1,4 +1,7 @@
 RewriteEngine On
 
-RewriteRule ^([a-zA-Z0-9_-]+)$ index.php?c=view&v=$1
-RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$ index.php?c=view&v=$1&id=$2
+RewriteRule ^rest/([a-zA-Z0-9_-]+)\/?$ index.php?c=rest&a=$1
+RewriteRule ^rest/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)\/?$ index.php?c=rest&a=$1&id=$2
+
+RewriteRule ^([a-zA-Z0-9_-]+)\/?$ index.php?c=view&v=$1
+RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)\/?$ index.php?c=view&v=$1&id=$2

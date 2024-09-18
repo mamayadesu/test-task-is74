@@ -4,7 +4,7 @@ services:
   web:
     user: "${UID}:${GID}"
     image: php:7.4-apache
-    command: bash -c "source /etc/apache2/envvars; a2enmod rewrite; service apache2 stop; apache2 -D FOREGROUND"
+    command: bash -c "source /etc/apache2/envvars; a2enmod rewrite; service apache2 stop; usermod -u 1000 www-data; apache2 -D FOREGROUND"
     ports:
       - 80:80
     volumes:
