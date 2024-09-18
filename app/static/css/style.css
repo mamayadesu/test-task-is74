@@ -3,3 +3,27 @@
     font-size: 20px;
     margin: 48px auto 128px;
 }
+
+.width-third {
+    width: 33%;
+}
+
+.form-block {
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+.form-block__label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.form-block input {
+    width: 100%;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.form-block__button {
+    padding: 8px 10px;
+}

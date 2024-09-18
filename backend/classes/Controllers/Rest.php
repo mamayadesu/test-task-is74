@@ -6,6 +6,11 @@ class Rest implements IController
 {
     private array $result = [];
 
+    private function action_test() : void
+    {
+        $this->result = ["hello" => "world"];
+    }
+
     public function handleRequest(array $parameters) : void
     {
         $action = $_GET["a"];
@@ -34,10 +39,5 @@ class Rest implements IController
         }
 
         die(json_encode($this->result));
-    }
-
-    private function action_test() : void
-    {
-        $this->result = ["hello" => "world"];
     }
 }

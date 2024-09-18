@@ -8,6 +8,7 @@ class Layout
 
     private array $addedCssFiles = [];
     private array $addedJsFiles = [];
+    private string $addedJsCode = "";
 
     private function __construct()
     {
@@ -39,6 +40,11 @@ class Layout
         }
     }
 
+    public function addJsCode(string $code) : void
+    {
+        $this->addedJsCode .= "\n$code";
+    }
+
     public function compileFrontendHeaders() : string
     {
         $result = "";
@@ -55,6 +61,8 @@ class Layout
             $system_path = APP_DIR . "static/js/$filename";
             $result .= "<script src='$frontend_path?v=" . filemtime($system_path) . "'></script>\n";
         }
+
+        $result .= "<script type='text/javascript'>window.onload = function() { " . $this->addedJsCode . "\n }</script>";
 
         return $result;
     }
