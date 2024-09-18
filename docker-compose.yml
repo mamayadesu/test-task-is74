@@ -8,3 +8,6 @@ services:
       - 80:80
     volumes:
       - ./app:/var/www/html
+      - ./vendor:/var/www/vendor
+      - ./backend:/var/www/backend
+      - ./database:/var/www/database
