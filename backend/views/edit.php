@@ -35,6 +35,7 @@ Layout::getInstance()->addJsCode("//<script>
 ");
 
 ?>
+<a href="/">Список всех тарифов</a>
 
 <div id="tariff-edit">
     <div class="form-block width-third">
