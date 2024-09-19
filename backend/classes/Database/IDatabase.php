@@ -4,6 +4,8 @@ namespace test_is74\Database;
 
 interface IDatabase
 {
+    public function escapeString(string $value) : string;
+
     public function select(string $sql) : ?array;
 
     public function selectOne(string $sql) : ?array;

@@ -26,6 +26,7 @@ class Tariff extends DTO
         $obj->end = $row["end"];
         $obj->updated = $row["updated"];
         $obj->price = $row["price"];
+        $obj->_loaded = true;
 
         return $obj;
     }

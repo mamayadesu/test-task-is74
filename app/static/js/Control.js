@@ -1,7 +1,7 @@
 class Control
 {
     constructor(el, options) {
-        this.element = el;
+        this.element = $(el);
         this.options = options;
         this.subscribe();
     }

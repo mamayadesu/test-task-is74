@@ -16,7 +16,15 @@ class TariffEditControl extends Control
 
     onSave(response)
     {
-        console.log(response);
+        if (!response.success)
+        {
+            alert(response.error);
+        }
+        else
+        {
+            alert("Тариф добавлен!");
+            window.location.href = "/edit/" + response.id;
+        }
     }
 
     getEvents()
@@ -26,6 +34,23 @@ class TariffEditControl extends Control
             "button[name=save] click": function(ev) {
                 var el = $(ev.target);
 
+                var fields = {
+                    name: this.$name.val(),
+                    description: this.$description.val(),
+                    speed: this.$speed.val(),
+                    price: this.$price.val(),
+                    end: this.$end.val()
+                };
+
+                for (var k in fields)
+                {
+                    if (fields[k].trim().length == 0)
+                    {
+                        alert("Не все поля заполнены");
+                        return;
+                    }
+                }
+
                 if (this.loadedFile === null)
                 {
                     alert("Необходимо выбрать изображение");
@@ -34,11 +59,11 @@ class TariffEditControl extends Control
 
                 var formData = new FormData();
 
-                formData.append("name", this.$name.val());
-                formData.append("description", this.$description.val());
-                formData.append("speed", this.$speed.val());
-                formData.append("price", this.$price.val());
-                formData.append("end", this.$end.val());
+                formData.append("name", fields.name);
+                formData.append("description", fields.description);
+                formData.append("speed", fields.speed);
+                formData.append("price", fields.price);
+                formData.append("end", fields.end);
                 formData.append("image", this.loadedFile);
 
                 var tariff_id = this.options.tariff_id;

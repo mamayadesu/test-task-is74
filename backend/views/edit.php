@@ -2,6 +2,7 @@
 
 use \test_is74\DTO\Tariff;
 use \test_is74\Layout;
+use \test_is74\Helpers\DateTimeHelper;
 
 /** @var \test_is74\Controllers\View $this */
 
@@ -15,7 +16,7 @@ if ($this->id !== null)
     $this->title = "Редактирование тарифа";
     $model = Tariff::factory(intval($this->id));
 
-    if ($model === null)
+    if (!$model->_loaded)
     {
         echo "Тариф не найден";
         return;
@@ -24,11 +25,12 @@ if ($this->id !== null)
 
 Layout::getInstance()->addJsFile("TariffEditControl.js");
 
+// "//<script>" чисто для PhpStorm, чтоб он понимал что это js
 Layout::getInstance()->addJsCode("//<script>
 (function() {
-    new TariffEditControl($('#tariff-edit'), " . json_encode([
+    new TariffEditControl('#tariff-edit', " . json_encode([
         'tariff_id' => $model->id
-    ]) . ")
+    ]) . ");
 })();
 ");
 
@@ -37,12 +39,12 @@ Layout::getInstance()->addJsCode("//<script>
 <div id="tariff-edit">
     <div class="form-block width-third">
         <label for="name" class="form-block__label">Название тарифа</label>
-        <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($model->name); ?>" placeholder="Базовый">
+        <input type="text" id="name" maxlength="64" name="name" value="<?php echo htmlspecialchars($model->name); ?>" placeholder="Базовый">
     </div>
 
     <div class="form-block width-third">
         <label for="description" class="form-block__label">Описание</label>
-        <textarea id="description" class="form-block__label" name="description"><?php echo htmlspecialchars($model->description); ?></textarea>
+        <textarea id="description" maxlength="1000" class="form-block__label" name="description"><?php echo htmlspecialchars($model->description); ?></textarea>
     </div>
 
     <div class="form-block width-third">
@@ -57,7 +59,7 @@ Layout::getInstance()->addJsCode("//<script>
 
     <div class="form-block width-third">
         <label for="end" class="form-block__label">Дата окончания</label>
-        <input type="text" id="end" name="end" value="<?php echo $model->end; ?>" placeholder="дд.мм.гггг">
+        <input type="text" id="end" name="end" value="<?php echo ($model->end ? DateTimeHelper::dateFromTimestamp($model->end) : ""); ?>" placeholder="дд.мм.гггг">
     </div>
 
     <div class="form-block width-third">

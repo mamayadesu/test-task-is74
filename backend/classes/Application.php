@@ -23,6 +23,7 @@ class Application
         }
         catch (Throwable $e)
         {
+            @http_response_code(500);
             echo "<pre>";
             echo "Uncaught " . get_class($e) . " '" . $e->getMessage() . "' in " . $e->getFile() . " on line " . $e->getLine() . "\n\n";
             echo "Stack Trace:\n";

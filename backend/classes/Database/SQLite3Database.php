@@ -52,7 +52,16 @@ class SQLite3Database extends Database implements IDatabase
         $result = [];
         while ($row = $db_result->fetchArray())
         {
-            $result[] = $row;
+            $newRow = [];
+            foreach ($row as $column => $value)
+            {
+                if (gettype($column) == "integer")
+                {
+                    continue;
+                }
+                $newRow[$column] = $value;
+            }
+            $result[] = $newRow;
         }
         return $result;
     }
@@ -62,10 +71,15 @@ class SQLite3Database extends Database implements IDatabase
      * @return array
      * @throws SQLite3Exception
      */
-    public function selectOne(string $sql): array
+    public function selectOne(string $sql) : array
     {
         $result = @$this->db->querySingle($sql, true);
         $this->checkForErrors();
+
+        if (!$result)
+        {
+            return [];
+        }
         return $result;
     }
 
@@ -108,5 +122,10 @@ class SQLite3Database extends Database implements IDatabase
         {
             throw new SQLite3Exception($this->db->lastErrorMsg(), $this->db->lastErrorCode());
         }
+    }
+
+    public function escapeString(string $value) : string
+    {
+        return SQLite3::escapeString($value);
     }
 }
