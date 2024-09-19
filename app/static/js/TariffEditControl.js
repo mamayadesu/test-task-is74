@@ -33,7 +33,7 @@ class TariffEditControl extends Control
 
             "button[name=save] click": function(ev) {
                 var el = $(ev.target);
-
+                var isNew = this.options.tariff_id === null;
                 var fields = {
                     name: this.$name.val(),
                     description: this.$description.val(),
@@ -51,7 +51,7 @@ class TariffEditControl extends Control
                     }
                 }
 
-                if (this.loadedFile === null)
+                if (this.loadedFile === null && isNew)
                 {
                     alert("Необходимо выбрать изображение");
                     return;
@@ -64,7 +64,7 @@ class TariffEditControl extends Control
                 formData.append("speed", fields.speed);
                 formData.append("price", fields.price);
                 formData.append("end", fields.end);
-                formData.append("image", this.loadedFile);
+                formData.append("image", this.loadedFile === null ? "" : this.loadedFile);
 
                 var tariff_id = this.options.tariff_id;
                 if (tariff_id === null)

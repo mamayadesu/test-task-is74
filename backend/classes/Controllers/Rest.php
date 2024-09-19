@@ -5,6 +5,7 @@ namespace test_is74\Controllers;
 use test_is74\Database\Database;
 use test_is74\DTO\Tariff;
 use test_is74\Helpers\DateTimeHelper;
+use test_is74\Helpers\ImageHelper;
 
 class Rest implements IController
 {
@@ -101,6 +102,12 @@ class Rest implements IController
             
             WHERE id=$id;");
             $this->result["success"] = true;
+        }
+
+        if (isset($_FILES["image"]))
+        {
+            $this->result["imagesaved"] = true;
+            ImageHelper::saveUploadedImage((int)$id);
         }
     }
 

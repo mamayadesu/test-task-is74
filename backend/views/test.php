@@ -9,3 +9,5 @@ $this->title = "table dump";
 $rows = Database::getInstance()->select("SELECT * FROM tariffs");
 
 echo "<pre>"; var_dump($rows); echo "</pre>";
+
+phpinfo();

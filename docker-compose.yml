@@ -12,3 +12,6 @@ services:
       - ./vendor:/var/www/vendor
       - ./backend:/var/www/backend
       - ./database:/var/www/database
+    build:
+      context: .
+      dockerfile: ./Dockerfile
