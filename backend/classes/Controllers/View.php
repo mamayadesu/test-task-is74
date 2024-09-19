@@ -48,6 +48,7 @@ class View implements IController
         Layout::getInstance()->addJsFile("Control.js");
         Layout::getInstance()->addCssFile("style.css");
         Layout::getInstance()->addJsFile("jquery-3.7.1.min.js");
+        Layout::getInstance()->addJsFile("jquery.maskedinput.js");
     }
 
     public function load(string $viewName) : void

@@ -4,9 +4,14 @@ namespace test_is74\Helpers;
 
 class ImageHelper
 {
-    public static function saveUploadedImage(int $tariff_id) : void
+    public static function saveUploadedImage(string $tariff_id) : void
     {
-        $filePath = APP_DIR . "static/upload/tariff_$tariff_id.jpg";
+        $uploads = APP_DIR . "static/upload/";
+        if (!file_exists($uploads))
+        {
+            mkdir($uploads);
+        }
+        $filePath = $uploads . "tariff_$tariff_id.jpg";
         if (file_exists($filePath))
         {
             unlink($filePath);

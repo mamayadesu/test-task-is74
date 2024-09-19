@@ -4,6 +4,13 @@
     margin: 48px auto 128px;
 }
 
+.red {
+    color: red;
+    font-size: 16px;
+    display: block;
+    margin-bottom: 24px;
+}
+
 .width-third {
     width: 33%;
 }

@@ -9,11 +9,34 @@ use test_is74\Helpers\ImageHelper;
 
 class Rest implements IController
 {
+    const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png"];
+
     private array $result = [];
 
     private function action_test() : void
     {
         $this->result = ["hello" => "world"];
+    }
+
+    private function action_delete_tariff() : void
+    {
+        $id = intval($_GET["id"] ?? 0);
+        $this->result["success"] = false;
+        if ($id === 0)
+        {
+            $this->result["error"] = "Тариф не указан";
+            return;
+        }
+
+        Database::getInstance()->execute("DELETE FROM tariffs WHERE id=$id");
+
+        $filePath = APP_DIR . "static/upload/tariff_$id.jpg";
+        if (file_exists(APP_DIR . "static/upload/tariff_$id.jpg"))
+        {
+            unlink($filePath);
+        }
+
+        $this->result["success"] = true;
     }
 
     private function action_save_tariff() : void
@@ -82,6 +105,27 @@ class Rest implements IController
             }
         }
 
+        $tempId = null;
+        if (isset($_FILES["image"]))
+        {
+            if (!in_array(mime_content_type($_FILES["image"]["tmp_name"]), self::ALLOWED_IMAGE_TYPES)) {
+                $this->result["error"] = "Можно загрузить изображения только .png и .jpg/.jpeg формата";
+                unlink($_FILES["image"]["tmp_name"]);
+                return;
+            }
+
+            if ($isNew)
+            {
+                $tempId = md5(microtime(true) . "-" . rand(1000, 10000));
+                ImageHelper::saveUploadedImage($tempId);
+            }
+            else
+            {
+                ImageHelper::saveUploadedImage($id);
+            }
+
+        }
+
         if ($isNew)
         {
             $id = $db->insert("INSERT INTO tariffs (name, description, speed, price, end, created, updated) VALUES
@@ -89,6 +133,10 @@ class Rest implements IController
 
             $this->result["success"] = true;
             $this->result["id"] = $id;
+            if ($tempId !== null)
+            {
+                rename(APP_DIR . "static/upload/tariff_" . $tempId . ".jpg", APP_DIR . "static/upload/tariff_" . $id . ".jpg");
+            }
         }
         else
         {
@@ -102,12 +150,7 @@ class Rest implements IController
             
             WHERE id=$id;");
             $this->result["success"] = true;
-        }
-
-        if (isset($_FILES["image"]))
-        {
-            $this->result["imagesaved"] = true;
-            ImageHelper::saveUploadedImage((int)$id);
+            $this->result["id"] = $id;
         }
     }
 

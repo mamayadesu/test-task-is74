@@ -63,9 +63,15 @@ Layout::getInstance()->addJsCode("//<script>
     </div>
 
     <div class="form-block width-third">
+        <?php if ($model->_loaded): ?>
+        <img src="/static/upload/tariff_<?php echo $model->id; ?>.jpg" style="width: 100%;">
+        <? endif; ?>
         <label for="image" class="form-block__label">Изображение</label>
         <input type="file" name="image" accept=".png, .jpg, .jpeg">
     </div>
 
+    <?php if ($model->_loaded): ?>
+    <a href="javascript:;" id="delete_tariff" class="red">Удалить тариф</a>
+    <? endif; ?>
     <button name="save" class="form-block__button">Сохранить</button>
 </div>

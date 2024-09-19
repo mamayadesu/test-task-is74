@@ -12,17 +12,19 @@ class TariffEditControl extends Control
         this.$price = this.element.find('input[name=price]');
         this.$end = this.element.find('input[name=end]');
         this.$image = this.element.find('input[name=image]');
+
+        this.$end.mask("99.99.9999", { placeholder: "дд.мм.гггг" });
     }
 
     onSave(response)
     {
         if (!response.success)
         {
-            alert(response.error);
+            window.alert(response.error);
         }
         else
         {
-            alert("Тариф добавлен!");
+            window.alert("Тариф сохранён!");
             window.location.href = "/edit/" + response.id;
         }
     }
@@ -46,14 +48,14 @@ class TariffEditControl extends Control
                 {
                     if (fields[k].trim().length == 0)
                     {
-                        alert("Не все поля заполнены");
+                        window.alert("Не все поля заполнены");
                         return;
                     }
                 }
 
                 if (this.loadedFile === null && isNew)
                 {
-                    alert("Необходимо выбрать изображение");
+                    window.alert("Необходимо выбрать изображение");
                     return;
                 }
 
@@ -79,18 +81,33 @@ class TariffEditControl extends Control
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        this.onSave(JSON.parse(response.responseText));
+                        this.onSave(JSON.parse(response));
                     }.bind(this),
                     error: function(response) {
-                        this.onSave(JSON.parse(response.responseText));
+                        this.onSave(JSON.parse(response));
                     }.bind(this)
                 })
             },
 
             "input[name=image] change": function(ev) {
                 this.loadedFile = ev.target.files[0];
-            }
+            },
 
+            "#delete_tariff click": function(ev) {
+                if (window.confirm("Тариф невозможно будет восстановить. Удалить?"))
+                {
+                    $.get("/rest/delete_tariff/" + this.options.tariff_id, function(response) {
+                        if (response.success)
+                        {
+                            window.location.href = "/";
+                        }
+                        else
+                        {
+                            window.alert(response.error);
+                        }
+                    }, "json");
+                }
+            }
         }
     }
 }
