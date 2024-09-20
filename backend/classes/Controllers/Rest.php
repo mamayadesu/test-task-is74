@@ -15,6 +15,39 @@ class Rest implements IController
 
     private array $result = [];
 
+    private function action_csv_export() : void
+    {
+        $tariffs = TariffHelper::getAllTariffs();
+        $rows = [
+            [
+                "Название",
+                "Описание",
+                "Скорость",
+                "Дата окончания",
+                "Цена"
+            ]
+        ];
+
+        foreach ($tariffs as $tariff)
+        {
+            $rows[] = [
+                $tariff->name,
+                $tariff->description,
+                $tariff->speed,
+                DateTimeHelper::dateFromTimestamp($tariff->end),
+                $tariff->price
+            ];
+        }
+        $stdout = fopen("php://output", "w");
+        header("Content-Type: octet/stream");
+        header("Content-Disposition: attachment; filename=\"tariffs.csv\"");
+        foreach ($rows as $row)
+        {
+            fputcsv($stdout, $row);
+        }
+        exit;
+    }
+
     private function action_pdf_export() : void
     {
         $html = "<style>\n" . file_get_contents(APP_DIR . "static/css/tariff_card.css") . "\n</style>\n";

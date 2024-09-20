@@ -6,7 +6,7 @@ abstract class DTO
 {
     public bool $_loaded = false;
 
-    public static function getNullObject() : DTO
+    public static function getNullObject()
     {
         $obj = new static();
 

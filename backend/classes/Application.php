@@ -4,6 +4,7 @@ namespace test_is74;
 
 use test_is74\Database\Database;
 use test_is74\Controllers\Controller;
+use test_is74\Helpers\CsvSessionsHelper;
 use Throwable;
 
 class Application
@@ -16,6 +17,8 @@ class Application
                 Database::getInstance()->close();
             }
         });
+
+        CsvSessionsHelper::clearExpiredSessions();
 
         try
         {

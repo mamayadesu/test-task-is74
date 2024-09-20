@@ -2,3 +2,4 @@
 database/database.db
 app/static/upload/
 app/tariffs.pdf
+backend/csv_sessions

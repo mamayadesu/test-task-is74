@@ -30,6 +30,12 @@ class SQLite3Database extends Database implements IDatabase
     updated INTEGER NULL
 )");
 
+                $this->execute("CREATE TABLE csv_sessions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    filename VARCHAR(255) NOT NULL,
+    expires INTEGER NOT NULL
+)");
+
                 $this->execute("CREATE TABLE options (
     name VARCHAR(255) PRIMARY KEY,
     value VARCHAR(255) NOT NULL

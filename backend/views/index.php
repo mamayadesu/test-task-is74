@@ -26,6 +26,8 @@ $all_tariffs = TariffHelper::getAllTariffs();
 <div class="index__links">
     <a href="/edit">Создать тариф</a>
     <a href="/rest/pdf_export" target="_blank">Экспорт в PDF</a>
+    <a href="/rest/csv_export" target="_blank">Экспорт в CSV</a>
+    <a href="/csv_import">Импорт из CSV</a>
 </div>
 
 
