@@ -6,6 +6,7 @@ use test_is74\Database\Database;
 use test_is74\DTO\Tariff;
 use test_is74\Helpers\DateTimeHelper;
 use test_is74\Helpers\ImageHelper;
+use test_is74\Helpers\TariffHelper;
 
 class Rest implements IController
 {
