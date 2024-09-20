@@ -18,6 +18,22 @@ class Rest implements IController
         $this->result = ["hello" => "world"];
     }
 
+    private function action_pdf_import() : void
+    {
+        $html = "<style>\n" . file_get_contents(APP_DIR . "static/css/tariff_card.css") . "\n</style>\n";
+
+        $all_tariffs = TariffHelper::getAllTariffs();
+
+        $html .= "<div class='tariffcard__wrapper'>";
+        foreach ($all_tariffs as $tariff)
+        {
+            $html .= TariffHelper::getCompiledTariffCard($tariff);
+        }
+        $html .= "</div>";
+        
+        exit;
+    }
+
     private function action_delete_tariff() : void
     {
         $id = intval($_GET["id"] ?? 0);
