@@ -48,7 +48,7 @@ class CsvSessionsHelper
         }
     }
 
-    public static function CsvToArray($filename, $delimiter = ",")
+    public static function CsvToArray($filename, $delimiter = ",") : array
     {
         $data = array();
         if (($f = fopen($filename, "r")) !== false)
