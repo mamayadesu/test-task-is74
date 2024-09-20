@@ -2,6 +2,10 @@ class Control
 {
     constructor(el, options) {
         this.element = $(el);
+        if (typeof options == 'undefined')
+        {
+            options = {};
+        }
         this.options = options;
         this.subscribe();
     }

@@ -34,7 +34,8 @@ class TariffEditControl extends Control
         return {
 
             "button[name=save] click": function(ev) {
-                var el = $(ev.target);
+                var el = $(ev.currentTarget);
+
                 var isNew = this.options.tariff_id === null;
                 var fields = {
                     name: this.$name.val(),

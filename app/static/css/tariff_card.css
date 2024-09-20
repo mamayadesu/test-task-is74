@@ -1,0 +1,58 @@
+.tariffcard__wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: auto;
+    padding-top: 18px;
+}
+
+.tariffcard__card {
+    flex: 0 0 31%;
+    border: 4px solid black;
+    position: relative;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-bottom: 16px;
+}
+
+.tariffcard__card img {
+    width: 100%;
+}
+
+.tariffcard__name {
+    font-size: 32px;
+    font-weight: bolder;
+    margin-left: 4px;
+}
+
+.tariffcard__description {
+    margin: 12px 8px;
+    padding-bottom: 64px;
+}
+
+.tariffcard__speed {
+    font-weight: bold;
+    margin-left: 4px;
+    position: absolute;
+    bottom: 24px;
+}
+
+.tariffcard__price {
+    font-style: italic;
+    margin-left: 4px;
+    position: absolute;
+    bottom: 0;
+}
+
+.tariffcard__edit {
+    position: absolute;
+    bottom: 24px;
+    right: 0;
+}
+
+.tariffcard__delete {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
