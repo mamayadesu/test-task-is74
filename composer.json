@@ -3,5 +3,8 @@
     "psr-4": {
       "test_is74\\": "backend/classes/"
     }
+  },
+  "require": {
+    "mpdf/mpdf": "^6.1"
   }
 }

@@ -7,6 +7,7 @@ use test_is74\DTO\Tariff;
 use test_is74\Helpers\DateTimeHelper;
 use test_is74\Helpers\ImageHelper;
 use test_is74\Helpers\TariffHelper;
+use \mPDF;
 
 class Rest implements IController
 {
@@ -14,24 +15,46 @@ class Rest implements IController
 
     private array $result = [];
 
-    private function action_test() : void
-    {
-        $this->result = ["hello" => "world"];
-    }
-
     private function action_pdf_import() : void
     {
         $html = "<style>\n" . file_get_contents(APP_DIR . "static/css/tariff_card.css") . "\n</style>\n";
 
         $all_tariffs = TariffHelper::getAllTariffs();
-
         $html .= "<div class='tariffcard__wrapper'>";
+        $version_src = "";
         foreach ($all_tariffs as $tariff)
         {
+            $version_src .= $tariff->updated;
             $html .= TariffHelper::getCompiledTariffCard($tariff);
         }
+        $version = md5($version_src);
+
+        $db_version = Database::getInstance()->selectOne("SELECT * FROM options WHERE name='pdf_file_version'")["value"];
+
+        // проверяем кэшированную версию pdf-файла
+        if ($version == $db_version && $_GET["id"] != "force")
+        {
+            header("Location: /tariffs.pdf");
+            exit;
+        }
+
+        if (file_exists(APP_DIR . "tariffs.pdf"))
+        {
+            unlink(APP_DIR . "tariffs.pdf");
+        }
+
+        Database::getInstance()->execute("UPDATE options SET value='$version' WHERE name='pdf_file_version'");
+
         $html .= "</div>";
-        
+        $pdf = @new mPDF();
+
+        // отключаем вывод
+        ob_start();
+        @$pdf->WriteHTML($html);
+        @$pdf->Output("tariffs.pdf");
+        ob_get_clean();
+
+        header("Location: /tariffs.pdf");
         exit;
     }
 

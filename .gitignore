@@ -1,3 +1,4 @@
 .idea
 database/database.db
 app/static/upload/
+app/tariffs.pdf

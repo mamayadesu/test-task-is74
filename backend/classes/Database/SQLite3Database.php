@@ -29,6 +29,13 @@ class SQLite3Database extends Database implements IDatabase
     end INTEGER NOT NULL,
     updated INTEGER NULL
 )");
+
+                $this->execute("CREATE TABLE options (
+    name VARCHAR(255) PRIMARY KEY,
+    value VARCHAR(255) NOT NULL
+)");
+
+                $this->insert("INSERT INTO options (name, value) VALUES ('pdf_file_version', '');");
             }
             catch (SQLite3Exception $e)
             {
