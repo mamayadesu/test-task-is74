@@ -15,7 +15,7 @@ class Rest implements IController
 
     private array $result = [];
 
-    private function action_pdf_import() : void
+    private function action_pdf_export() : void
     {
         $html = "<style>\n" . file_get_contents(APP_DIR . "static/css/tariff_card.css") . "\n</style>\n";
 
