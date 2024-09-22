@@ -48,38 +48,28 @@ Layout::getInstance()->addJsCode("//<script>
 
         <div class="form-block" style="margin-top: 0; margin-bottom: 0;">
             Название
-            <select id="name_column">
-                <option value="-notset" selected>Не задано</option>
-            </select>
+            <select id="name_column" class="js-select-column"></select>
         </div>
 
 
         <div class="form-block" style="margin-top: 0; margin-bottom: 0;">
             Описание
-            <select id="description_column">
-                <option value="-notset" selected>Не задано</option>
-            </select>
+            <select id="description_column" class="js-select-column"></select>
         </div>
 
         <div class="form-block" style="margin-top: 0; margin-bottom: 0;">
             Скорость
-            <select id="speed_column">
-                <option value="-notset" selected>Не задано</option>
-            </select>
+            <select id="speed_column" class="js-select-column"></select>
         </div>
 
         <div class="form-block" style="margin-top: 0; margin-bottom: 0;">
             Дата окончания
-            <select id="end_column">
-                <option value="-notset" selected>Не задано</option>
-            </select>
+            <select id="end_column" class="js-select-column"></select>
         </div>
 
         <div class="form-block" style="margin-top: 0; margin-bottom: 0;">
             Цена
-            <select id="price_column">
-                <option value="-notset" selected>Не задано</option>
-            </select>
+            <select id="price_column" class="js-select-column"></select>
         </div>
     </div>
 
@@ -95,4 +85,6 @@ Layout::getInstance()->addJsCode("//<script>
             <option value="ignore">Игнорировать</option>
         </select>
     </div>
+
+    <button type="submit" class="form-block__button" id="import_csv">Импортировать</button>
 </div>

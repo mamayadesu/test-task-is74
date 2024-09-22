@@ -84,6 +84,8 @@ class Rest implements IController
         // отключаем вывод
         ob_start();
         @$pdf->WriteHTML($html);
+
+        // кэшируем файл для оптимизации
         @$pdf->Output("tariffs.pdf");
         ob_get_clean();
 

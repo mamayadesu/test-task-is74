@@ -5,6 +5,8 @@ class CsvImportControl extends Control
 
         this.columnsCount = 0;
         this.firstRowIsHeader = false;
+        this.selectsPreviousValues = {};
+        this.$selects = this.element.find(".js-select-column");
 
         if (options.data.length == 1)
         {
@@ -32,9 +34,8 @@ class CsvImportControl extends Control
             }
         });
 
-
-
         this.renderTable();
+        this.resetColumns();
     }
 
     getPreparedData() {
@@ -86,6 +87,60 @@ class CsvImportControl extends Control
         this.element.find("#csv-table").html(html);
     }
 
+    resetColumns() {
+        var data = this.getPreparedData();
+        var headers = data[0];
+
+        this.$selects.val("-notset");
+        this.$selects.each(function(index, node) {
+            var $el = $(node);
+
+            $el.html("<option value=\"-notset\" selected>не задано</option>");
+            var k = -1;
+            headers.forEach(header => {
+                k++;
+                $el.append($("<option>", {
+                    value: k,
+                    text: header
+                }));
+            });
+        });
+
+        this.$selects.each(function(index, node) {
+            this.selectsPreviousValues[$(node).prop("id")] = $(node).val();
+        }.bind(this));
+    }
+
+    getCollectedData() {
+        var finalResult = [];
+
+        for (var k in this.selectsPreviousValues) {
+            if (this.selectsPreviousValues[k] == "-notset") {
+                return false;
+            }
+        }
+
+        var preparedData = this.getPreparedData();
+
+        var first = true;
+        preparedData.forEach(row => {
+            if (first)
+            {
+                first = false;
+                return true;
+            }
+
+            var newDataRow = {};
+            for (var k in this.selectsPreviousValues) {
+                var columnName = k.replace("_column", "");
+                newDataRow[columnName] = row[this.selectsPreviousValues[k]];
+            }
+            finalResult.push(newDataRow);
+        });
+
+        return finalResult;
+    }
+
     getEvents() {
         return {
 
@@ -94,8 +149,40 @@ class CsvImportControl extends Control
 
                 this.firstRowIsHeader = el.prop("checked");
                 this.renderTable();
-            }
+                this.resetColumns();
+            },
 
+            ".js-select-column change": function(ev) {
+                var el = $(ev.currentTarget);
+
+                var elId = el.prop("id");
+                var elVal = el.val();
+
+                var self = this;
+                this.$selects.each(function(index, node) {
+                    var $element = $(node);
+
+                    $element.find("option").each(function(index, option) {
+                        if ($(option).prop("value") == self.selectsPreviousValues[elId])
+                        {
+                            $(option).prop("disabled", false);
+                        }
+
+                        if ($(option).prop("value") == elVal && elVal != "-notset" && elId != $element.prop("id"))
+                        {
+                            $(option).prop("disabled", true);
+                        }
+                    });
+                });
+
+                this.selectsPreviousValues[elId] = elVal;
+            },
+
+            "#import_csv click": function(ev) {
+                var el = $(ev.currentTarget);
+
+                console.log(this.getCollectedData());
+            }
         };
     }
 }

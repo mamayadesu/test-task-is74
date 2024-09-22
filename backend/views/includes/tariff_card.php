@@ -1,5 +1,5 @@
 <div class="tariffcard__card">
-    <img src="/static/upload/tariff_{$id}.jpg">
+    <img src="/static/upload/tariff_{$id}.jpg?updated={$updated}">
 
     <div class="tariffcard__name">{$name}</div>
 

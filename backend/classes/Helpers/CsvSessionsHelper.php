@@ -7,13 +7,15 @@ use test_is74\DTO\CsvSession;
 
 class CsvSessionsHelper
 {
+    const SESSION_LIFETIME = 86400;
+
     public static function createSession() : int
     {
         if (!file_exists(CSV_SESSIONS_DIR))
         {
             mkdir(CSV_SESSIONS_DIR);
         }
-        $expires = time() + 86400;
+        $expires = time() + self::SESSION_LIFETIME;
         $session_id = Database::getInstance()->insert("INSERT INTO csv_sessions (filename, expires) VALUES
         ('" . Database::getInstance()->escapeString($_FILES["csv_file"]["name"]) . "', $expires);");
         $new_file = CSV_SESSIONS_DIR . "session_$session_id.csv";
