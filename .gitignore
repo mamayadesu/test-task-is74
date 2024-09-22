@@ -3,3 +3,5 @@ database/database.db
 app/static/upload/
 app/tariffs.pdf
 backend/csv_sessions
+composer/vendor
+composer/composer.lock

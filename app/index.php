@@ -6,7 +6,7 @@ define("VIEWS_DIR", ROOT_DIR . "backend/views/");
 define("CSV_SESSIONS_DIR", ROOT_DIR . "backend/csv_sessions/");
 define("CONFIGS_DIR", ROOT_DIR . "backend/configs/");
 
-require ROOT_DIR . "vendor/autoload.php";
+require ROOT_DIR . "composer/vendor/autoload.php";
 
 use test_is74\Application;
 

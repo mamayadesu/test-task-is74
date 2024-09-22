@@ -1,17 +1,19 @@
 version: '3'
 
 services:
-  web:
+  test_task74:
     user: "${UID}:${GID}"
     image: php:7.4-apache
-    command: bash -c "source /etc/apache2/envvars; a2enmod rewrite; service apache2 stop; usermod -u 1000 www-data; apache2 -D FOREGROUND"
+    command: bash -c "source /etc/apache2/envvars; a2enmod rewrite; composer install --working-dir /var/www/composer; composer cc; rmdir /var/www/composer/cache; rm /var/www/composer/.htaccess; service apache2 stop; usermod -u 1000 www-data; apache2 -D FOREGROUND"
     ports:
       - 80:80
     volumes:
+      - ./composer:/var/www/composer
       - ./app:/var/www/html
-      - ./vendor:/var/www/vendor
       - ./backend:/var/www/backend
       - ./database:/var/www/database
     build:
       context: .
       dockerfile: ./Dockerfile
+    environment:
+      COMPOSER_HOME: /var/www/composer
