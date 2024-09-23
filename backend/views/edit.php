@@ -35,8 +35,6 @@ Layout::getInstance()->addJsCode("//<script>
 ");
 
 ?>
-<a href="/">Список всех тарифов</a>
-
 <div id="tariff-edit">
     <div class="form-block width-third">
         <label for="name" class="form-block__label">Название тарифа</label>
@@ -64,7 +62,7 @@ Layout::getInstance()->addJsCode("//<script>
     </div>
 
     <div class="form-block width-third">
-        <?php if ($model->_loaded): ?>
+        <?php if ($model->_loaded && file_exists(APP_DIR . "static/upload/tariff_" . $model->id . ".jpg")): ?>
         <img src="/static/upload/tariff_<?php echo $model->id; ?>.jpg" style="width: 100%;">
         <? endif; ?>
         <label for="image" class="form-block__label">Изображение</label>

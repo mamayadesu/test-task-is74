@@ -28,7 +28,8 @@ Layout::getInstance()->addJsCode("//<script>
 
 (function () {
     new CsvImportControl('#csv_import_setup', " . json_encode([
-        "data" => $data
+        "data" => $data,
+        "sessionId" => $session->id
     ]) . ");
 })();
 
@@ -41,6 +42,11 @@ Layout::getInstance()->addJsCode("//<script>
     <div class="form-block width-full">
         <label class="form-block__label">Исходные данные</label>
         <table id="csv-table" border></table>
+    </div>
+
+    <div class="form-block width-full" style="display: flex;">
+        <input type="checkbox" id="first_row_is_header" style="flex: 0">
+        <label for="first_row_is_header" class="form-block__label" style="margin-bottom: 0">Первая строка - заголовок таблицы</label>
     </div>
 
     <div class="form-block width-full">
@@ -71,11 +77,6 @@ Layout::getInstance()->addJsCode("//<script>
             Цена
             <select id="price_column" class="js-select-column"></select>
         </div>
-    </div>
-
-    <div class="form-block width-full" style="display: flex;">
-        <input type="checkbox" id="first_row_is_header" style="flex: 0">
-        <label for="first_row_is_header" class="form-block__label" style="margin-bottom: 0">Первая строка - заголовок таблицы</label>
     </div>
 
     <div class="form-block width-full">

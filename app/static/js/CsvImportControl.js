@@ -78,7 +78,7 @@ class CsvImportControl extends Control
             }
 
             preparedData[i].forEach(column => {
-                html += "<" + tag + ">" + column + "</" + tag + ">";
+                html += "<" + tag + ">" + column.split("\n").join("<br>") + "</" + tag + ">";
             })
 
             html += "</tr>";
@@ -181,7 +181,49 @@ class CsvImportControl extends Control
             "#import_csv click": function(ev) {
                 var el = $(ev.currentTarget);
 
-                console.log(this.getCollectedData());
+                var requestParams = {};
+                requestParams.data = this.getCollectedData();
+
+                if (requestParams.data === false)
+                {
+                    window.alert("Некоторые столбцы не указаны. Необходимо указать все!");
+                    return;
+                }
+
+                requestParams.actionOnConflict = this.element.find("select[name=action_on_conflict]").val();
+
+                var sourceButton = el.html();
+
+                el.html("Выполняется импорт...");
+                el.prop("disabled", true);
+
+                $.ajax({
+                    url: "/rest/csv_import/" + this.options.sessionId,
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(requestParams),
+                    dataType: "json",
+                    success: function(data) {
+                        if (data.success)
+                        {
+                            window.alert("Импорт завершён!");
+                            window.location.href = "/";
+                        }
+                        else
+                        {
+                            el.html(sourceButton);
+                            el.prop("disabled", false);
+                            window.alert("Ошибка импорта. " + data.error);
+                        }
+                    },
+                    error: function(response) {
+                        var data = response.responseJSON;
+                        el.html(sourceButton);
+                        el.prop("disabled", false);
+
+                        window.alert("Произошла ошибка при импорте");
+                    }
+                });
             }
         };
     }

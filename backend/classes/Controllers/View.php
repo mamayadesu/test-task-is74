@@ -9,6 +9,7 @@ class View implements IController
     private string $title = "";
     private string $pageContent = "";
     private ?string $id = null;
+    private ?string $view = null;
 
     public function handleRequest(array $parameters) : void
     {
@@ -20,6 +21,7 @@ class View implements IController
         }
 
         $this->id = $parameters["id"];
+        $this->view = $parameters["view"];
         if (file_exists(ROOT_DIR . "backend/views/" . $parameters["view"] . ".php"))
         {
             $this->load($parameters["view"]);

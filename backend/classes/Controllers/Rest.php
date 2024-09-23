@@ -13,7 +13,178 @@ class Rest implements IController
 {
     const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png"];
 
+    const CSV_IMPORT_FIELD_NAMES = array(
+        "name" => "Название",
+        "description" => "Описание",
+        "speed" => "Скорость",
+        "price" => "Цена",
+        "end" => "Дата окончания"
+    );
+
     private array $result = [];
+
+    private function action_csv_import() : void
+    {
+        $required_fields = ["name", "description", "speed", "price", "end"];
+
+        $id = intval($_GET["id"] ?? null);
+        if ($id === 0)
+        {
+            $this->result["error"] = "Session_id не указан";
+            return;
+        }
+
+        $check = Database::getInstance()->selectOne("SELECT * FROM tariffs WHERE id=$id");
+        if (count($check) == 0)
+        {
+            $this->result["error"] = "Ваша сессия истекла. Пожалуйста, попробуйте ещё раз";
+            return;
+        }
+
+        $this->result["success"] = false;
+        $data = @json_decode(file_get_contents("php://input"), true);
+        if ($data === null)
+        {
+            $this->result["error"] = "Сервер получил некорректные данные";
+            return;
+        }
+        $rows = $data["data"] ?? [];
+        if (!is_array($rows) || count($rows) == 0)
+        {
+            $this->result["error"] = "Нет данных для импорта";
+            return;
+        }
+        $tariffNameAppearances = array();
+        $actionOnConflict = $data["actionOnConflict"] ?? "ignore";
+
+        $line_number = 0;
+        foreach ($rows as $index => $row)
+        {
+            $line_number++;
+
+            // сначала проверим на наличие всех полей
+            foreach ($required_fields as $required_field)
+            {
+                if (!isset($row[$required_field]))
+                {
+                    if (isset($row["name"]))
+                    {
+                        $error_msg = "Тариф '" . $row["name"] . "'";
+                    }
+                    else
+                    {
+                        $error_msg = "Строка $line_number";
+                    }
+                    $error_msg .= " не содержит поле '" . self::CSV_IMPORT_FIELD_NAMES[$required_field] . "'";
+                    $this->result["error"] = $error_msg;
+                    return;
+                }
+            }
+
+            // отдельно проверим на их заполненность
+            foreach ($required_fields as $required_field)
+            {
+                if ($row[$required_field] == "")
+                {
+                    if ($row["name"] != "")
+                    {
+                        $this->result["error"] = "Тариф '" . $row["name"] . "', поле '" . self::CSV_IMPORT_FIELD_NAMES[$required_field] . "' пустое";
+                    }
+                    else
+                    {
+                        $this->result["error"] = "Строка $line_number, поле '" . self::CSV_IMPORT_FIELD_NAMES[$required_field] . "' пустое";
+                    }
+                }
+            }
+
+            if (!isset($tariffNameAppearances[$row["name"]]))
+            {
+                $tariffNameAppearances[$row["name"]] = [];
+            }
+
+            $tariffNameAppearances[$row["name"]][] = $line_number;
+
+            if (!DateTimeHelper::validateDate($row["end"]))
+            {
+                $this->result["error"] = "Тариф '" . $row["name"] . "', дата окончания некорректна";
+                return;
+            }
+
+            $rows[$index]["end"] = DateTimeHelper::toTimestamp($row["end"]);
+
+            if (!preg_match("/^[1-9][0-9\.]{0,15}$/", $row["price"]))
+            {
+                $this->result["error"] = "Тариф '" . $row["name"] . "', цена может быть только целым или дробным числом";
+                return;
+            }
+
+            $rows[$index]["price"] = round($row["price"], 2);
+
+            if (!preg_match("/^[1-9][0-9]{0,15}$/", $row["speed"]))
+            {
+                $this->result["error"] = "Тариф '" . $row["name"] . "', скорость может быть только целым числом";
+                return;
+            }
+
+            $rows[$index]["speed"] = intval($row["speed"]);
+        }
+
+        foreach ($tariffNameAppearances as $name => $linesList)
+        {
+            if (count($linesList) > 1)
+            {
+                $this->result["error"] = "Тариф '" . $name . "', повторение на следующих строках: " . implode(", ", $linesList);
+                return;
+            }
+        }
+        $inserts = [];
+
+        $this->result["rows"] = $rows;
+
+        // после всех валидаций приступаем наконец к заполнению данных
+        foreach ($rows as $row)
+        {
+            $name = Database::getInstance()->escapeString($row["name"]);
+            $description = Database::getInstance()->escapeString($row["description"]);
+            $speed = $row["speed"];
+            $price = $row["price"];
+            $end = $row["end"];
+
+            $check = Database::getInstance()->selectOne("SELECT * FROM tariffs WHERE name='$name'");
+            if (count($check) > 0)
+            {
+                if ($actionOnConflict == "replace")
+                {
+                    Database::getInstance()->execute("UPDATE tariffs SET 
+                    description='$description',
+                    speed=$speed,
+                    price=$price,
+                    end='$end',
+                    updated=" . time() . "
+                    WHERE name='$name'");
+                }
+            }
+            else
+            {
+                $inserts[] = "('$name', '$description', $speed, $price, '$end', " . time() . ", " . time() . ")";
+            }
+        }
+
+        if (count($inserts) > 0)
+        {
+            $insert_sql = "INSERT INTO tariffs (name, description, speed, price, end, created, updated) VALUES " . implode(", ", $inserts) . ";";
+            Database::getInstance()->execute($insert_sql);
+        }
+
+        Database::getInstance()->execute("DELETE FROM csv_sessions WHERE id=$id");
+
+        if (file_exists(CSV_SESSIONS_DIR . "session_$id.csv"))
+        {
+            unlink(CSV_SESSIONS_DIR . "session_$id.csv");
+        }
+
+        $this->result["success"] = true;
+    }
 
     private function action_csv_export() : void
     {
@@ -67,7 +238,7 @@ class Rest implements IController
         // проверяем кэшированную версию pdf-файла
         if ($version == $db_version && $_GET["id"] != "force")
         {
-            header("Location: /tariffs.pdf");
+            header("Location: /tariffs.pdf?v=$version");
             exit;
         }
 
@@ -89,7 +260,7 @@ class Rest implements IController
         @$pdf->Output("tariffs.pdf");
         ob_get_clean();
 
-        header("Location: /tariffs.pdf");
+        header("Location: /tariffs.pdf?v=$version");
         exit;
     }
 
@@ -116,7 +287,7 @@ class Rest implements IController
 
     private function action_save_tariff() : void
     {
-        $id = $_GET["id"];
+        $id = intval($_GET["id"]);
         $isNew = !$id;
         $this->result["success"] = false;
         $fields = [
@@ -151,6 +322,12 @@ class Rest implements IController
         if (strlen($fields["description"]) > 1000)
         {
             $this->result["error"] = "Описание слишком длинное";
+            return;
+        }
+
+        if (!isset($_FILES["image"]) && ($isNew || !file_exists(APP_DIR . "static/upload/tariff_$id.jpg")))
+        {
+            $this->result["error"] = "Изображение не загружено";
             return;
         }
 

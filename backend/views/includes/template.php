@@ -14,6 +14,9 @@ use \test_is74\Layout;
         <div class="page__wrapper">
             <h2><?php echo $this->title; ?></h2>
             <hr>
+            <?php if ($this->view != "index"): ?>
+            <a href="/">Список всех тарифов</a>
+            <? endif; ?>
             <?php echo $this->pageContent; ?>
         </div>
     </body>
