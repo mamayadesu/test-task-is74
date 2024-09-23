@@ -1,4 +1,5 @@
 .idea
+.env
 app/static/upload/
 !database/
 app/tariffs.pdf

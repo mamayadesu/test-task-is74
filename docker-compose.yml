@@ -4,7 +4,7 @@ services:
   test_task74:
     user: "${UID}:${GID}"
     image: php:7.4-apache
-    command: bash -c "source /etc/apache2/envvars; a2enmod rewrite; composer install --working-dir /var/www/composer; composer cc; rmdir /var/www/composer/cache; rm /var/www/composer/.htaccess; service apache2 stop; apache2 -D FOREGROUND"
+    command: bash -c "source /etc/apache2/envvars; a2enmod rewrite; composer install --working-dir /var/www/composer; composer cc; rmdir /var/www/composer/cache; rm /var/www/composer/.htaccess; service apache2 stop; usermod -u ${REAL_UID} www-data; apache2 -D FOREGROUND"
     ports:
       - 80:80
     volumes:
