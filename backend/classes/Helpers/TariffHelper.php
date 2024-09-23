@@ -30,15 +30,7 @@ class TariffHelper
             $tariff_property = $tariff->$property;
             if ($property == "price")
             {
-                $price = explode(".", $tariff_property);
-                if (count($price) == 1)
-                {
-                    $tariff_property .= ".00";
-                }
-                else if (strlen($price[1]) == 1)
-                {
-                    $tariff_property .= "0";
-                }
+                $tariff_property = $tariff->getPriceAsString();
             }
             $result = str_replace("{\$$property}", nl2br($tariff_property), $result);
         }

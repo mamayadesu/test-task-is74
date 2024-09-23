@@ -30,4 +30,20 @@ class Tariff extends DTO
 
         return $obj;
     }
+
+    public function getPriceAsString() : string
+    {
+        $value = round($this->price, 2);
+        $price = explode(".", $value);
+        if (count($price) == 1)
+        {
+            $value .= ".00";
+        }
+        else if (strlen($price[1]) == 1)
+        {
+            $value .= "0";
+        }
+
+        return (string) $value;
+    }
 }

@@ -53,7 +53,7 @@ Layout::getInstance()->addJsCode("//<script>
 
     <div class="form-block width-third">
         <label for="price" class="form-block__label">Цена</label>
-        <input type="text" id="price" name="price" value="<?php echo $model->price; ?>" placeholder="200">
+        <input type="number" id="price" name="price" value="<?php echo $model->getPriceAsString(); ?>" placeholder="200">
     </div>
 
     <div class="form-block width-third">

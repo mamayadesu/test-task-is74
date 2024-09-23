@@ -34,7 +34,7 @@ class Rest implements IController
             return;
         }
 
-        $check = Database::getInstance()->selectOne("SELECT * FROM tariffs WHERE id=$id");
+        $check = Database::getInstance()->selectOne("SELECT * FROM csv_sessions WHERE id=$id");
         if (count($check) == 0)
         {
             $this->result["error"] = "Ваша сессия истекла. Пожалуйста, попробуйте ещё раз";
@@ -111,6 +111,8 @@ class Rest implements IController
             }
 
             $rows[$index]["end"] = DateTimeHelper::toTimestamp($row["end"]);
+
+            $row["price"] = str_replace(",", ".", $row["price"]);
 
             if (!preg_match("/^[1-9][0-9\.]{0,15}$/", $row["price"]))
             {
@@ -328,6 +330,20 @@ class Rest implements IController
         if (!isset($_FILES["image"]) && ($isNew || !file_exists(APP_DIR . "static/upload/tariff_$id.jpg")))
         {
             $this->result["error"] = "Изображение не загружено";
+            return;
+        }
+
+        $fields["price"] = str_replace(",", ".", $fields["price"]);
+
+        if (!preg_match("/^[1-9][0-9\.]{0,15}$/", $fields["price"]))
+        {
+            $this->result["error"] = "Цена указана неверно. Может быть только целым или дробным числом";
+            return;
+        }
+
+        if (!preg_match("/^[1-9][0-9]{0,15}$/", $fields["speed"]))
+        {
+            $this->result["error"] = "Скорость указана неверно. Может быть только целым числом";
             return;
         }
 
