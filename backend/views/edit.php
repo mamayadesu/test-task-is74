@@ -61,6 +61,13 @@ Layout::getInstance()->addJsCode("//<script>
         <input type="text" id="end" name="end" value="<?php echo ($model->end ? DateTimeHelper::dateFromTimestamp($model->end) : ""); ?>" placeholder="дд.мм.гггг">
     </div>
 
+    <?php if ($model->_loaded): ?>
+    <div class="form-block width-third">
+        <label for="created" class="form-block__label">Дата создания</label>
+        <input type="text" id="created" value="<?php echo DateTimeHelper::dateFromTimestamp($model->created); ?>" disabled>
+    </div>
+    <? endif; ?>
+
     <div class="form-block width-third">
         <?php if ($model->_loaded && file_exists(APP_DIR . "static/upload/tariff_" . $model->id . ".jpg")): ?>
         <img src="/static/upload/tariff_<?php echo $model->id; ?>.jpg" style="width: 100%;">
