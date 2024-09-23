@@ -64,7 +64,7 @@ Layout::getInstance()->addJsCode("//<script>
     <?php if ($model->_loaded): ?>
     <div class="form-block width-third">
         <label for="created" class="form-block__label">Дата создания</label>
-        <input type="text" id="created" value="<?php echo DateTimeHelper::dateFromTimestamp($model->created); ?>" disabled>
+        <input type="text" id="created" value="<?php echo DateTimeHelper::dateTimeFromTimestamp($model->created); ?>" disabled>
     </div>
     <? endif; ?>
 

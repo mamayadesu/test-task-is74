@@ -6,8 +6,6 @@ use \Exception;
 
 abstract class Database
 {
-    const DRIVERS = ["sqlite3"];
-
     private static ?Database $instance = null;
 
     abstract protected function __construct(array $config);
@@ -19,11 +17,6 @@ abstract class Database
             return self::$instance;
         }
         $config = require CONFIGS_DIR . "database.php";
-
-        if (!in_array($config["driver"], self::DRIVERS))
-        {
-            throw new Exception("Driver '" . $config["driver"] . "' is not supported");
-        }
 
         switch ($config["driver"])
         {
