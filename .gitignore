@@ -1,6 +1,6 @@
 .idea
 app/static/upload/
-database/database.db
+!database/
 app/tariffs.pdf
 backend/csv_sessions
 composer/vendor
